@@ -138,7 +138,6 @@ public class Activity_ThemSach extends AppCompatActivity implements View.OnClick
                     String ghiChu = edtghiChu.getText().toString();
                     Sach sach = new Sach(tenSach, maloai, tacgia, linkAnh, namxuatban, soluong, noidung, ghiChu);
                     databaseAccsess.ThemThongTin_Sach(sach);
-
                     startActivity(new Intent(Activity_ThemSach.this, MainActivity.class));
                 } else {
 

@@ -112,7 +112,7 @@ public class DatabaseAccsess {
 
     //Sửa thông tin loại sách
     public void SuaThongTin_LoaiSach(LoaiSach loaiSach) {
-        String sql = "update tbl_loai set TenLoai = N'" + loaiSach.getTenLoai() + "' where MaLoai = '" + loaiSach.getMaLoai() + "'";
+        String sql = "update tbl_loai set TenLoai = '" + loaiSach.getTenLoai() + "' where MaLoai = '" + loaiSach.getMaLoai() + "'";
         db.execSQL(sql);
     }
 
@@ -124,9 +124,9 @@ public class DatabaseAccsess {
 
     //===================================================================================================
     //Lấy thông tin mượn sách
-    public ArrayList<MuonSach> getConten_MuonSach(Boolean tinhTrang,Boolean xacnhan) {
+    public ArrayList<MuonSach> getConten_MuonSach(Boolean tinhTrang, Boolean xacnhan) {
         ArrayList<MuonSach> list = new ArrayList<>();
-        c = db.rawQuery("select * from tbl_muonsach where TinhTrang ='" + tinhTrang + "' and XacNhan = '"+xacnhan+"'", new String[]{});
+        c = db.rawQuery("select * from tbl_muonsach where TinhTrang ='" + tinhTrang + "' and XacNhan = '" + xacnhan + "'", new String[]{});
         while (c.moveToNext()) {
             MuonSach muonSach = new MuonSach(c.getInt(0), c.getInt(1), c.getString(2), c.getString(3)
                     , Boolean.parseBoolean(c.getString(4)), Boolean.parseBoolean(c.getString(5)), c.getString(6));
@@ -140,11 +140,15 @@ public class DatabaseAccsess {
         String sql = "insert into tbl_muonsach values('" + muonSach.getMaSach() + "','" + muonSach.getMaDocGia() + "','" + muonSach.getNgayMuon() + "','" + muonSach.getNgayTra() + "','" + muonSach.getTinhTrang() + "','" + muonSach.getXacNhan() + "','" + muonSach.getGhiChu() + "')";
         db.execSQL(sql);
     }
+
     //Sửa thông tin loại mượn sách
-    public void SuaThongTin_MuonSach(LoaiSach loaiSach) {
-        String sql = "update tbl_loai set TenLoai = N'" + loaiSach.getTenLoai() + "' where MaLoai = '" + loaiSach.getMaLoai() + "'";
+    public void SuaThongTin_MuonSach(MuonSach muonSach) {
+        String sql = "update tbl_muonsach set NgayMuon = '" + muonSach.getNgayMuon() + "',NgayTra = '" + muonSach.getNgayTra() + "'" +
+                ",TinhTrang = '" + muonSach.getTinhTrang() + "',XacNhan = '" + muonSach.getXacNhan() + "'," +
+                "GhiChu = '" + muonSach.getGhiChu() + "' where MaSach = '" + muonSach.getMaSach() + "' and MaDocGia = '" + muonSach.getMaDocGia() + "'";
         db.execSQL(sql);
     }
+
     //Xóa thông tin mượn sách
     public void XoaThongTin_MuonSach(int maDocGia, int MaSach) {
         String sql = "delete from tbl_muonsach where MaSach = '" + MaSach + "' and MaDocGia = '" + maDocGia + "'";

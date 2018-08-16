@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ibct.quanlysach.Context.DocGia;
@@ -22,6 +23,7 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
     DatabaseAccsess databaseAccsess;
     int check = 0;
     int manhanvien;
+    TextView txtQuyen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
         edt_diachi = (EditText) findViewById(R.id.edt_diachi);
         edt_namsinh = (EditText) findViewById(R.id.edt_namsinh);
         edt_sodienthoai = (EditText) findViewById(R.id.edt_sodienthoai);
+        txtQuyen = (TextView) findViewById(R.id.txtQuyen);
         edt_taikhoan = (EditText) findViewById(R.id.edt_taikhoan);
 
         edt_matkhau = (EditText) findViewById(R.id.edt_matkhau);
@@ -53,6 +56,9 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
         databaseAccsess = DatabaseAccsess.getInstance(Activity_ThemNhanVien.this);
         databaseAccsess.open();
 
+        txtQuyen.setVisibility(View.GONE);
+        radio_quantri.setVisibility(View.GONE);
+        radio_nhanvien.setVisibility(View.GONE);
         if (check == 3 || check == 4) {
             btnXoa.setVisibility(View.VISIBLE);
             btnDangKy.setText("Sửa");
@@ -68,6 +74,7 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
             edt_diachi.setText(bundle.getString("diachi"));
             edt_namsinh.setText(String.valueOf(bundle.getInt("namsinh")));
             edt_sodienthoai.setText(bundle.getString("sodienthoai"));
+
             if (bundle.getBoolean("gioitinh") == true) {
                 radio_nam.setChecked(true);
                 radio_nu.setChecked(false);
@@ -75,15 +82,22 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
                 radio_nu.setChecked(true);
                 radio_nam.setChecked(false);
             }
-            if (bundle.getInt("quyen") == 0) {
-                radio_nhanvien.setChecked(false);
-                radio_quantri.setChecked(true);
-            } else if (bundle.getInt("quyen") == 1) {
-                radio_quantri.setChecked(false);
-                radio_nhanvien.setChecked(true);
-            } else if (bundle.getInt("quyen") == 2) {
-                radio_nhanvien.setChecked(false);
-                radio_quantri.setChecked(true);
+            if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                if (bundle.getInt("quyen") == 0) {
+                    radio_nhanvien.setChecked(false);
+                    radio_quantri.setChecked(true);
+                } else if (bundle.getInt("quyen") == 1) {
+                    radio_quantri.setChecked(false);
+                    radio_nhanvien.setChecked(true);
+                }
+                txtQuyen.setVisibility(View.VISIBLE);
+                radio_quantri.setVisibility(View.VISIBLE);
+                radio_nhanvien.setVisibility(View.VISIBLE);
+            } else {
+                txtQuyen.setVisibility(View.GONE);
+                radio_quantri.setVisibility(View.GONE);
+                radio_nhanvien.setVisibility(View.GONE);
+
             }
         }
     }
@@ -102,22 +116,32 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
                     String matkhau = edt_matkhau.getText().toString();
                     String nhaplai = edt_nhaplaimatkhau.getText().toString();
                     Boolean gioitinh;
-                    int maquyen;
+                    int maquyen = 0;
                     if (radio_nam.isChecked()) {
                         gioitinh = true;
                     } else {
                         gioitinh = false;
                     }
-                    if (radio_nhanvien.isChecked()) {
-                        maquyen = 1;
+                    if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                        if (radio_nhanvien.isChecked()) {
+                            maquyen = 1;
+                        } else {
+                            maquyen = 0;
+                        }
                     } else {
-                        maquyen = 0;
+                        maquyen = 2;
                     }
                     if (!taikhoan.equals("") && !matkhau.equals("") && !nhaplai.equals("") && matkhau.equals(nhaplai)) {
 
                         if (check == 0 || check == 2) {
                             if (databaseAccsess.getUserCount(taikhoan) == 0) {
-                                DocGia user = new DocGia(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                                DocGia user;
+                                if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                                    user = new DocGia(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                                } else {
+                                    user = new DocGia(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, 2);
+                                }
+
                                 databaseAccsess.ThemThongTin_DocGia(user);
                                 Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 if (check == 2) {
@@ -129,7 +153,12 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
                                 Toast.makeText(this, "Tên đăng nhập đã tồn tại!", Toast.LENGTH_SHORT).show();
                             }
                         } else if (check == 4) {
-                            DocGia user = new DocGia(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                            DocGia user;
+                            if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                                user = new DocGia(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                            } else {
+                                user = new DocGia(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, 2);
+                            }
                             databaseAccsess.SuaThongTin_DocGia(user);
                             Toast.makeText(this, "Sửa thành công!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Activity_ThemNhanVien.this, Activity_DanhSachDocGia.class));
@@ -154,22 +183,36 @@ public class Activity_ThemNhanVien extends AppCompatActivity implements View.OnC
                         gioitinh = false;
                     }
 
-                    if (radio_nhanvien.isChecked()) {
-                        maquyen = 1;
+                    if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                        if (radio_nhanvien.isChecked()) {
+                            maquyen = 1;
+                        } else {
+                            maquyen = 0;
+                        }
                     } else {
-                        maquyen = 0;
+                        maquyen = 2;
                     }
                     if (!taikhoan.equals("") && !matkhau.equals("") && !nhaplai.equals("") && matkhau.equals(nhaplai)) {
                         if (check == 1) {
                             if (databaseAccsess.getNhanVienCount(taikhoan) == 0) {
-                                NhanVien user = new NhanVien(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                                NhanVien user;
+                                if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                                    user = new NhanVien(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                                } else {
+                                    user = new NhanVien(hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, 2);
+                                }
                                 databaseAccsess.ThemThongTin_NhanVien(user);
                                 Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(this, "Tên đăng nhập đã tồn tại!", Toast.LENGTH_SHORT).show();
                             }
                         } else if (check == 3) {
-                            NhanVien user = new NhanVien(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                            NhanVien user;
+                            if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+                                user = new NhanVien(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, maquyen);
+                            } else {
+                                user = new NhanVien(manhanvien, hoten, diachi, namsinh, sodienthoai, gioitinh, taikhoan, matkhau, 2);
+                            }
                             databaseAccsess.SuaThongTin_NhanVien(user);
                         }
                         startActivity(new Intent(Activity_ThemNhanVien.this, Activity_DanhSachDocGia.class));

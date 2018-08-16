@@ -23,6 +23,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     Button btnDangNhap;
     TextView txtDangKy;
     public static int madocgia;
+    public static int maquyen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,29 +65,54 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 String taikhoan = edt_taikhoan.getText().toString();
                 String matkhau = edt_matkhau.getText().toString();
 
-                if (list_User.size() > 0 || list_NhanVien.size() > 0) {
-
-                    for (int i = 0; i < list_User.size(); i++) {
-                        if (!taikhoan.equals("") && !matkhau.equals("")) {
-                            if ((taikhoan.equals(list_User.get(i).getTenDangNhap()) && matkhau.equals(list_User.get(i).getMatKhau())) || (taikhoan.equals(list_NhanVien.get(i).getTenDangNhap()) && matkhau.equals(list_NhanVien.get(i).getMatKhau()))) {
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                if (list_User.get(i).getTenDangNhap() != null) {
+                if (list_User.size() > 0) {
+                    if (list_NhanVien.size() > 0) {
+                        for (int i = 0; i < list_User.size(); i++) {
+                            if (!taikhoan.equals("") && !matkhau.equals("")) {
+                                if ((taikhoan.equals(list_User.get(i).getTenDangNhap()) && matkhau.equals(list_User.get(i).getMatKhau()))) {
                                     madocgia = list_User.get(i).getMaDocGia();
-                                } else {
-                                    madocgia = list_NhanVien.get(i).getMaNV();
+                                    maquyen = list_User.get(i).getMaQuyen();
+                                    startActivity(new Intent(ActivityLogin.this, MainActivity.class));
                                 }
-                                startActivity(new Intent(ActivityLogin.this, MainActivity.class));
-                                break;
                             } else {
-                                Toast.makeText(this, "Tài khoản hoặc mật khẩu chưa đúng vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Kiểm tra dữ liệu trống!", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(this, "Kiểm tra dữ liệu trống!", Toast.LENGTH_SHORT).show();
+                        }
+                        for (int i = 0; i < list_NhanVien.size(); i++) {
+                            if (!taikhoan.equals("") && !matkhau.equals("")) {
+                                if (list_NhanVien.get(i).getTenDangNhap() != null) {
+                                    if ((taikhoan.equals(list_NhanVien.get(i).getTenDangNhap()) && matkhau.equals(list_NhanVien.get(i).getMatKhau()))) {
+                                        madocgia = list_NhanVien.get(i).getMaNV();
+                                        maquyen = list_NhanVien.get(i).getMaQuyen();
+                                        startActivity(new Intent(ActivityLogin.this, MainActivity.class));
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(this, "Kiểm tra dữ liệu trống!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < list_User.size(); i++) {
+                            if (!taikhoan.equals("") && !matkhau.equals("")) {
+                                if (list_User.size() > 0) {
+                                    if (list_User.get(i).getTenDangNhap() != null) {
+                                        if ((taikhoan.equals(list_User.get(i).getTenDangNhap()) && matkhau.equals(list_User.get(i).getMatKhau()))) {
+                                            madocgia = list_User.get(i).getMaDocGia();
+                                            maquyen = list_User.get(i).getMaQuyen();
+                                            startActivity(new Intent(ActivityLogin.this, MainActivity.class));
+                                        }
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(this, "Kiểm tra dữ liệu trống!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
+
                 }
                 break;
             case R.id.txtDangKy:
+                maquyen = 2;
                 Intent intent = new Intent(ActivityLogin.this, Activity_ThemNhanVien.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("check", 2);

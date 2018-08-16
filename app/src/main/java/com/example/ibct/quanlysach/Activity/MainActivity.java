@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.view.ContextMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -62,18 +63,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
+        if (ActivityLogin.maquyen == 2) {
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.btn_danhsachdocgia).setVisible(false);
+            nav_Menu.findItem(R.id.btn_thongke).setVisible(false);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Activity_ThemSach.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("check", 0);
-                intent.putExtra("data", bundle);
-                startActivity(intent);
-            }
-        });
+        if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, Activity_ThemSach.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("check", 0);
+                    intent.putExtra("data", bundle);
+                    startActivity(intent);
+                }
+            });
+        } else if (ActivityLogin.maquyen == 2) {
+            fab.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -104,21 +114,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.btn_danhmucsach) {
-            startActivity(new Intent(MainActivity.this, MainActivity.class));
-        } else if (id == R.id.btn_danhsachdocgia) {
-            startActivity(new Intent(MainActivity.this, Activity_DanhSachDocGia.class));
-        } else if (id == R.id.btn_thongke) {
-            startActivity(new Intent(MainActivity.this, Activity_ThongKe.class));
-        } else if (id == R.id.btn_dangxuat) {
-            startActivity(new Intent(MainActivity.this, ActivityLogin.class));
-        } else if (id == R.id.btn_khosach) {
-            startActivity(new Intent(MainActivity.this, Activity_KhoSach.class));
+        if (ActivityLogin.maquyen == 0 || ActivityLogin.maquyen == 1) {
+            if (id == R.id.btn_danhmucsach) {
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
+            } else if (id == R.id.btn_danhsachdocgia) {
+                startActivity(new Intent(MainActivity.this, Activity_DanhSachDocGia.class));
+            } else if (id == R.id.btn_thongke) {
+                startActivity(new Intent(MainActivity.this, Activity_ThongKe.class));
+            } else if (id == R.id.btn_dangxuat) {
+                startActivity(new Intent(MainActivity.this, ActivityLogin.class));
+            } else if (id == R.id.btn_khosach) {
+                startActivity(new Intent(MainActivity.this, Activity_KhoSach.class));
+            }
+        } else if (ActivityLogin.maquyen == 2) {
+            if (id == R.id.btn_danhmucsach) {
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
+            } else if (id == R.id.btn_dangxuat) {
+                startActivity(new Intent(MainActivity.this, ActivityLogin.class));
+            } else if (id == R.id.btn_khosach) {
+                startActivity(new Intent(MainActivity.this, Activity_KhoSach.class));
+            }
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

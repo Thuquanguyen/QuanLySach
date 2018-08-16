@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.ibct.quanlysach.Activity.ActivityLogin;
 import com.example.ibct.quanlysach.Activity.Activity_KhoSach;
 import com.example.ibct.quanlysach.Activity.Activity_ThemSach;
+import com.example.ibct.quanlysach.Context.DocGia;
 import com.example.ibct.quanlysach.Context.MuonSach;
 import com.example.ibct.quanlysach.Context.Sach;
 import com.example.ibct.quanlysach.R;
@@ -80,47 +81,51 @@ public class SachAdapter extends ArrayAdapter<Sach> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        if (listSach.get(position).getHinhAnh() != "") {
-            File imgFile = new File(listSach.get(position).getHinhAnh());
-            if (imgFile.exists()) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                viewHolder.img_hinhanh.setImageBitmap(myBitmap);
+        if (arraylist.get(position).getSoLuong() > 0) {
+            if (listSach.get(position).getHinhAnh() != "") {
+                File imgFile = new File(listSach.get(position).getHinhAnh());
+                if (imgFile.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    viewHolder.img_hinhanh.setImageBitmap(myBitmap);
+                }
             }
+            viewHolder.txtNoiDung.setText(listSach.get(position).getTenSach());
+            viewHolder.txtSoLuong.setText("Còn lại : " + String.valueOf(listSach.get(position).getSoLuong()));
+            viewHolder.btnNoiDung.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, Activity_ThemSach.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("tensach", listSach.get(position).getTenSach());
+                    bundle.putInt("maloai", position);
+                    bundle.putInt("masach", listSach.get(position).getMaSach());
+                    bundle.putString("tacgia", listSach.get(position).getTacGia());
+                    bundle.putString("hinhanh", listSach.get(position).getHinhAnh());
+                    bundle.putInt("namxuatban", listSach.get(position).getNamXuatBan());
+                    bundle.putInt("soluong", listSach.get(position).getSoLuong());
+                    bundle.putString("noidung", listSach.get(position).getNoiDung());
+                    bundle.putString("ghichu", listSach.get(position).getGhiChu());
+                    bundle.putInt("check", 1);
+                    intent.putExtra("data", bundle);
+                    mContext.startActivity(intent);
+                }
+            });
+            viewHolder.btnMuon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ActivityLogin.maquyen == 2) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        String currentDateandTime = sdf.format(new Date());
+                        DatabaseAccsess databaseAccsess = DatabaseAccsess.getInstance(mContext);
+                        databaseAccsess.open();
+                        MuonSach muonSach = new MuonSach(listSach.get(position).getMaSach(), ActivityLogin.madocgia, currentDateandTime, "", false, false, "");
+                        databaseAccsess.ThemThongTin_MuonSach(muonSach);
+                        Toast.makeText(mContext, "Đang chờ xử lý", Toast.LENGTH_SHORT).show();
+                        mContext.startActivity(new Intent(mContext,Activity_KhoSach.class));
+                    }
+                }
+            });
         }
-        viewHolder.txtNoiDung.setText(listSach.get(position).getTenSach());
-        viewHolder.txtSoLuong.setText("Còn lại : " + String.valueOf(listSach.get(position).getSoLuong()));
-        viewHolder.btnNoiDung.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, Activity_ThemSach.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("tensach", listSach.get(position).getTenSach());
-                bundle.putInt("maloai", position);
-                bundle.putInt("masach", listSach.get(position).getMaSach());
-                bundle.putString("tacgia", listSach.get(position).getTacGia());
-                bundle.putString("hinhanh", listSach.get(position).getHinhAnh());
-                bundle.putInt("namxuatban", listSach.get(position).getNamXuatBan());
-                bundle.putInt("soluong", listSach.get(position).getSoLuong());
-                bundle.putString("noidung", listSach.get(position).getNoiDung());
-                bundle.putString("ghichu", listSach.get(position).getGhiChu());
-                bundle.putInt("check", 1);
-                intent.putExtra("data", bundle);
-                mContext.startActivity(intent);
-            }
-        });
-        viewHolder.btnMuon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String currentDateandTime = sdf.format(new Date());
-                DatabaseAccsess databaseAccsess = DatabaseAccsess.getInstance(mContext);
-                databaseAccsess.open();
-                MuonSach muonSach = new MuonSach(listSach.get(position).getMaSach(), ActivityLogin.madocgia, currentDateandTime, "", false,false, "");
-                databaseAccsess.ThemThongTin_MuonSach(muonSach);
-                Toast.makeText(mContext, "Đang chờ xử lý", Toast.LENGTH_SHORT).show();
-                mContext.startActivity(new Intent(mContext, Activity_KhoSach.class));
-            }
-        });
 
         return view;
     }

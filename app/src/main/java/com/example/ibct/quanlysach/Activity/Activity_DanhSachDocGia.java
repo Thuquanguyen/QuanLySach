@@ -42,8 +42,10 @@ public class Activity_DanhSachDocGia extends TabActivity {
         list_NhanVien = databaseAccsess.getConten_NhanVien();
         TabHost tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.activity__danh_sach_doc_gia, tabHost.getTabContentView(), true);
-        tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Độc giả").setContent(R.id.listView_DocGia));
-        tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Nhân viên").setContent(R.id.listView_DocGia));
+        if (ActivityLogin.maquyen == 0) {
+            tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Độc giả").setContent(R.id.listView_DocGia));
+            tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Nhân viên").setContent(R.id.listView_DocGia));
+        }
         lst_danhsach = (ListView) tabHost.findViewById(R.id.listView_DocGia);
         docGiaAdapter = new DocGiaAdapter(Activity_DanhSachDocGia.this, R.layout.custom_thongtin_docgia, list_DocGia);
         lst_danhsach.setAdapter(docGiaAdapter);
@@ -51,14 +53,20 @@ public class Activity_DanhSachDocGia extends TabActivity {
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                if (tabId.equals("tab1")) {
+                if (ActivityLogin.maquyen == 0) {
+                    if (tabId.equals("tab1")) {
+                        docGiaAdapter = new DocGiaAdapter(Activity_DanhSachDocGia.this, R.layout.custom_thongtin_docgia, list_DocGia);
+                        lst_danhsach.setAdapter(docGiaAdapter);
+                        a = 2;
+                    } else if (tabId.equals("tab2")) {
+                        nhanVienAdapter = new NhanVienAdapter(Activity_DanhSachDocGia.this, R.layout.custom_thongtin_docgia, list_NhanVien);
+                        lst_danhsach.setAdapter(nhanVienAdapter);
+                        a = 1;
+                    }
+                } else if (ActivityLogin.maquyen == 1) {
                     docGiaAdapter = new DocGiaAdapter(Activity_DanhSachDocGia.this, R.layout.custom_thongtin_docgia, list_DocGia);
                     lst_danhsach.setAdapter(docGiaAdapter);
-                    a = 0;
-                } else if (tabId.equals("tab2")) {
-                    nhanVienAdapter = new NhanVienAdapter(Activity_DanhSachDocGia.this, R.layout.custom_thongtin_docgia, list_NhanVien);
-                    lst_danhsach.setAdapter(nhanVienAdapter);
-                    a = 1;
+                    a = 2;
                 }
             }
         });

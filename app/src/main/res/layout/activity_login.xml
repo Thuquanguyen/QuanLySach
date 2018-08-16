@@ -43,13 +43,12 @@
             android:layout_marginRight="30dp">
 
             <EditText
-                android:inputType="text"
                 android:id="@+id/edt_taikhoan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="Tài Khoản"
-                android:text="admin"
+                android:inputType="text"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
         </android.support.design.widget.TextInputLayout>
@@ -74,13 +73,12 @@
             android:layout_marginRight="30dp">
 
             <EditText
-                android:text="admin"
-                android:inputType="textPassword"
                 android:id="@+id/edt_matkhau"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="Mật Khẩu"
+                android:inputType="textPassword"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
         </android.support.design.widget.TextInputLayout>
