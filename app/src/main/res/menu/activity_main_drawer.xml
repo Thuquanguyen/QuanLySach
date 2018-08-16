@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/btn_danhmucsach"
+            android:icon="@drawable/icon_danhmucsach"
+            android:title="Danh Mục Sách" />
+        <item
+            android:id="@+id/btn_danhsachdocgia"
+            android:icon="@drawable/icon_docgia"
+            android:title="Danh Sách Độc Giả" />
+        <item
+            android:id="@+id/btn_khosach"
+            android:icon="@drawable/icon_danhmucsach"
+            android:title="Kho Sách" />
+        <item
+            android:id="@+id/btn_thongke"
+            android:icon="@drawable/icon_thongke"
+            android:title="Thống kê" />
+        <item
+            android:id="@+id/btn_dangxuat"
+            android:icon="@drawable/icon_logout"
+            android:title="Đăng Xuất" />
+    </group>
+</menu>
